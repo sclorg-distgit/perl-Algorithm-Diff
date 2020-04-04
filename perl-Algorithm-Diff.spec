@@ -2,7 +2,7 @@
 
 Name:           %{?scl_prefix}perl-Algorithm-Diff
 Version:        1.1903
-Release:        15%{?dist}
+Release:        16%{?dist}
 Summary:        Compute `intelligent' differences between two files/lists
 License:        GPL+ or Artistic
 URL:            https://metacpan.org/release/Algorithm-Diff
@@ -12,6 +12,7 @@ BuildArch:      noarch
 # Build:
 BuildRequires:  %{?scl_prefix}perl-interpreter
 BuildRequires:  %{?scl_prefix}perl-generators
+BuildRequires:  %{?scl_prefix}perl(Config)
 BuildRequires:  %{?scl_prefix}perl(ExtUtils::MakeMaker)
 # Run-time:
 BuildRequires:  %{?scl_prefix}perl(Carp)
@@ -39,6 +40,9 @@ find the *smallest possible* set of differences.
 # Generate provide for perl(Algorithm::DiffOld)
 %patch0
 
+# Fix shebangs
+%{?scl:scl enable %{scl} '}perl -MConfig -i -pe %{?scl:'"}'%{?scl:"'}s{^#!/usr/bin/perl\b}{$Config{startperl}}%{?scl:'"}'%{?scl:"'} *.pl%{?scl:'}
+
 %build
 %{?scl:scl enable %{scl} '}perl Makefile.PL INSTALLDIRS=vendor && make %{?_smp_mflags}%{?scl:'}
 
@@ -61,6 +65,9 @@ rm -f %{buildroot}%{perl_vendorlib}/Algorithm/*.pl
 %{_mandir}/man3/Algorithm::DiffOld.3*
 
 %changelog
+* Fri Mar 13 2020 Petr Pisar <ppisar@redhat.com> - 1.1903-16
+- Fix shebangs (bug #1813202)
+
 * Mon Jan 06 2020 Jitka Plesnikova <jplesnik@redhat.com> - 1.1903-15
 - SCL
 
